@@ -70,112 +70,135 @@ export default function App() {
   }
 
   return (
-    <div className="p-6 max-w-xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">🏓 Score Tracker (P vs E)</h1>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white p-8 font-sans">
+      <div className="max-w-2xl mx-auto bg-white shadow-xl rounded-2xl p-8 space-y-6">
+        <h1 className="text-4xl font-extrabold text-center text-blue-700">🏓 Ping Pong Score Tracker</h1>
 
-      <form onSubmit={handleSubmit} className="mb-6 space-y-2">
-        <input
-          type="date"
-          value={newMatch.date}
-          onChange={(e) => setNewMatch({ ...newMatch, date: e.target.value })}
-          className="border p-2 w-full"
-        />
-        <input
-          type="number"
-          placeholder="P score"
-          value={newMatch.P}
-          onChange={(e) => setNewMatch({ ...newMatch, P: e.target.value })}
-          className="border p-2 w-full"
-        />
-        <input
-          type="number"
-          placeholder="E score"
-          value={newMatch.E}
-          onChange={(e) => setNewMatch({ ...newMatch, E: e.target.value })}
-          className="border p-2 w-full"
-        />
-        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
-          Add Match
-        </button>
-      </form>
-
-      <div className="mb-4 font-semibold">
-        Total – P: {totals.P}, E: {totals.E}
-      </div>
-
-      <table className="w-full border">
-        <thead>
-          <tr className="bg-gray-200">
-            <th className="border p-2">Date</th>
-            <th className="border p-2">P</th>
-            <th className="border p-2">E</th>
-            <th className="border p-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {matches.map((m) => (
-            <tr key={m.id}>
-              <td className="border p-2">{m.date}</td>
-              <td className="border p-2">{m.P}</td>
-              <td className="border p-2">{m.E}</td>
-              <td className="border p-2 space-x-2">
-                <button
-                  className="text-blue-600 underline"
-                  onClick={() => setEditingMatch(m)}
-                >
-                  Edit
-                </button>
-                <button
-                  className="text-red-600 underline"
-                  onClick={() => handleDelete(m.id)}
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      {editingMatch && (
-        <div className="mt-4 p-4 border rounded bg-gray-100">
-          <h2 className="font-semibold mb-2">
-            Editing Match: {editingMatch.date}
-          </h2>
-          <form
-            onSubmit={async (e) => {
-              e.preventDefault();
-              await updateDoc(doc(db, "scores", editingMatch.id), {
-                P: parseFloat(editingMatch.P),
-                E: parseFloat(editingMatch.E),
-              });
-              setEditingMatch(null);
-              window.location.reload();
-            }}
-            className="space-y-2"
+        <form onSubmit={handleSubmit} className="grid gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Date</label>
+            <input
+              type="date"
+              value={newMatch.date}
+              onChange={(e) => setNewMatch({ ...newMatch, date: e.target.value })}
+              className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Player P Score</label>
+            <input
+              type="number"
+              placeholder="P score"
+              value={newMatch.P}
+              onChange={(e) => setNewMatch({ ...newMatch, P: e.target.value })}
+              className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Player E Score</label>
+            <input
+              type="number"
+              placeholder="E score"
+              value={newMatch.E}
+              onChange={(e) => setNewMatch({ ...newMatch, E: e.target.value })}
+              className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+            />
+          </div>
+          <button
+            type="submit"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow"
           >
-            <input
-              type="number"
-              value={editingMatch.P}
-              onChange={(e) =>
-                setEditingMatch({ ...editingMatch, P: e.target.value })
-              }
-              className="border p-2 w-full"
-            />
-            <input
-              type="number"
-              value={editingMatch.E}
-              onChange={(e) =>
-                setEditingMatch({ ...editingMatch, E: e.target.value })
-              }
-              className="border p-2 w-full"
-            />
-            <button className="bg-green-600 text-white px-4 py-2 rounded">
-              Save Changes
-            </button>
-          </form>
+            ➕ Add Match
+          </button>
+        </form>
+
+        <div className="text-lg font-semibold text-center text-gray-800">
+          📊 Total – <span className="text-blue-600">P: {totals.P}</span>, <span className="text-red-500">E: {totals.E}</span>
         </div>
-      )}
+
+        <div className="overflow-x-auto">
+          <table className="w-full table-auto border-collapse text-sm">
+            <thead>
+              <tr className="bg-blue-100 text-gray-700">
+                <th className="border p-3">📅 Date</th>
+                <th className="border p-3">🅿️</th>
+                <th className="border p-3">🇪</th>
+                <th className="border p-3">⚙️</th>
+              </tr>
+            </thead>
+            <tbody>
+              {matches.map((m) => (
+                <tr key={m.id} className="text-center hover:bg-blue-50">
+                  <td className="border p-2 font-medium">{m.date}</td>
+                  <td className="border p-2 text-blue-700 font-semibold">{m.P}</td>
+                  <td className="border p-2 text-red-500 font-semibold">{m.E}</td>
+                  <td className="border p-2 space-x-2">
+                    <button
+                      className="text-blue-600 hover:text-blue-800 font-medium underline"
+                      onClick={() => setEditingMatch(m)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="text-red-600 hover:text-red-800 font-medium underline"
+                      onClick={() => handleDelete(m.id)}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {editingMatch && (
+          <div className="mt-6 p-4 border rounded bg-gray-100">
+            <h2 className="font-semibold text-lg mb-2">
+              ✏️ Editing Match from {editingMatch.date}
+            </h2>
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+                await updateDoc(doc(db, "scores", editingMatch.id), {
+                  P: parseFloat(editingMatch.P),
+                  E: parseFloat(editingMatch.E),
+                });
+                setEditingMatch(null);
+                window.location.reload();
+              }}
+              className="space-y-2"
+            >
+              <div>
+                <label className="block text-sm font-medium">P</label>
+                <input
+                  type="number"
+                  value={editingMatch.P}
+                  onChange={(e) =>
+                    setEditingMatch({ ...editingMatch, P: e.target.value })
+                  }
+                  className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">E</label>
+                <input
+                  type="number"
+                  value={editingMatch.E}
+                  onChange={(e) =>
+                    setEditingMatch({ ...editingMatch, E: e.target.value })
+                  }
+                  className="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                />
+              </div>
+              <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
+                ✅ Save Changes
+              </button>
+            </form>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
+
