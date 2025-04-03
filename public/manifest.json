@@ -1,0 +1,9 @@
+{
+    "name": "🏓 Score Tracker",
+    "short_name": "🏓",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#1a1a1a"
+  }
+  
